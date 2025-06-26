@@ -3,6 +3,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, ShoppingBag } from 'lucide-react';
 import { useState } from 'react';
+import { useCart } from '@/contexts/CartContext';
+import { useToast } from "@/hooks/use-toast";
 
 interface ProductCardProps {
   id: number;
@@ -20,6 +22,16 @@ interface ProductCardProps {
 const ProductCard = ({ product }: { product: ProductCardProps }) => {
   const [isLiked, setIsLiked] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const { addToCart } = useCart();
+  const { toast } = useToast();
+
+  const handleAddToCart = () => {
+    addToCart(product);
+    toast({
+      title: "Added to cart!",
+      description: `${product.name} has been added to your cart.`,
+    });
+  };
 
   return (
     <div 
@@ -64,7 +76,10 @@ const ProductCard = ({ product }: { product: ProductCardProps }) => {
         {/* Quick Add Overlay */}
         {isHovered && (
           <div className="absolute inset-0 bg-vitalis-charcoal/20 flex items-center justify-center animate-fade-in-up">
-            <Button className="bg-vitalis-peach hover:bg-vitalis-peach/90 text-vitalis-charcoal rounded-full px-6">
+            <Button 
+              className="bg-vitalis-peach hover:bg-vitalis-peach/90 text-vitalis-charcoal rounded-full px-6"
+              onClick={handleAddToCart}
+            >
               <ShoppingBag className="h-4 w-4 mr-2" />
               Quick Add
             </Button>
@@ -118,6 +133,7 @@ const ProductCard = ({ product }: { product: ProductCardProps }) => {
           <Button
             size="sm"
             className="bg-vitalis-coral hover:bg-vitalis-coral/90 text-vitalis-charcoal rounded-full"
+            onClick={handleAddToCart}
           >
             Add to Cart
           </Button>
